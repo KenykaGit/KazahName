@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATAU — Генератор казахских имён</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #07111f;
+  --panel: #101d30;
+  --panel-light: #172840;
+  --blue: #35b6ff;
+  --gold: #ffd166;
+  --text: #f5f8ff;
+  --muted: #8192aa;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 50% 25%, #123455 0%, transparent 48%),
+    var(--bg);
+  font-family: 'Manrope', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .15;
+  background-image: radial-gradient(#8acbff 1px, transparent 1px);
+  background-size: 35px 35px;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.page {
+  position: relative;
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 28px 45px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.logo span {
+  color: var(--gold);
+}
+
+.tag {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero {
+  text-align: center;
+  margin: auto 0 45px;
+  padding-top: 75px;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.name-wrap {
+  min-height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 800;
+  font-size: clamp(50px, 11vw, 110px);
+  letter-spacing: -5px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  background: linear-gradient(120deg, #ffffff 10%, #91d9ff 55%, #ffd166 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 35px #35b6ff20);
+  transition: transform .25s, filter .25s;
+}
+
+.name.animate {
+  animation: reveal .6s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes reveal {
+  0% {
+    transform: scale(.88);
+    filter: blur(8px);
+    opacity: .3;
+  }
+  65% {
+    transform: scale(1.04);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.meaning {
+  margin-top: 15px;
+  color: #c0cce0;
+  font-size: 16px;
+  min-height: 25px;
+}
+
+.origin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 23px;
+  padding: 9px 15px;
+  border: 1px solid #ffffff15;
+  border-radius: 100px;
+  color: #9db1ca;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.origin-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.controls {
+  background: linear-gradient(145deg, #14243aee, #0e1a2bee);
+  border: 1px solid #ffffff12;
+  border-radius: 25px;
+  padding: 25px;
+  box-shadow: 0 25px 80px #0003;
+  backdrop-filter: blur(20px);
+}
+
+.controls-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.filter label {
+  display: block;
+  margin: 0 0 9px 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+select {
+  width: 100%;
+  padding: 14px 12px;
+  border: 1px solid #ffffff13;
+  border-radius: 12px;
+  background: var(--panel-light);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border .2s;
+}
+
+select:focus {
+  border-color: var(--blue);
+}
+
+.generate {
+  margin-top: 22px;
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(100deg, #35b6ff, #73d2ff);
+  color: #061321;
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+  box-shadow: 0 8px 30px #35b6ff25;
+}
+
+.generate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px #35b6ff45;
+}
+
+.generate:active {
+  transform: scale(.99);
+}
+
+.generate:disabled {
+  cursor: wait;
+  opacity: .7;
+}
+
+.hint {
+  text-align: center;
+  color: #71849f;
+  font-size: 11px;
+  margin-top: 14px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 30px;
+  color: #62748d;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 650px) {
+  .page {
+    padding: 22px 16px 28px;
+  }
+
+  .tag {
+    display: none;
+  }
+
+  .hero {
+    padding-top: 65px;
+    margin-bottom: 35px;
+  }
+
+  .name-wrap {
+    min-height: 140px;
+  }
+
+  .name {
+    letter-spacing: -3px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    padding: 20px;
+  }
+
+  footer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <header>
+    <div class="logo">AT<span>А</span>U.</div>
+    <div class="tag">Казахские имена · Найди своё</div>
+  </header>
+
+  <main class="hero">
+    <div class="eyebrow">✦ ТВОЁ ИМЯ — ТВОЯ ИСТОРИЯ ✦</div>
+
+    <div class="name-wrap">
+      <h1 class="name" id="name">АТАУ</h1>
+    </div>
+
+    <p class="meaning" id="meaning">
+      Найди имя со своей историей
+    </p>
+
+    <div class="origin">
+      <span class="origin-dot"></span>
+      <span id="origin">КАЗАХСКИЕ ИМЕНА</span>
+    </div>
+  </main>
+
+  <section class="controls">
+    <div class="controls-title">Настрой свой выбор</div>
+
+    <div class="filters">
+      <div class="filter">
+        <label for="gender">ПОЛ</label>
+        <select id="gender">
+          <option value="all">Любой</option>
+          <option value="male">Мужское</option>
+          <option value="female">Женское</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label for="meaningType">ЗНАЧЕНИЕ</label>
+        <select id="meaningType">
+          <option value="all">Любое</option>
+          <option value="strength">Сила и характер</option>
+          <option value="nature">Природа и красота</option>
+          <option value="wisdom">Мудрость и доброта</option>
+          <option value="tradition">Традиции</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label for="length">ДЛИНА ИМЕНИ</label>
+        <select id="length">
+          <option value="all">Любая</option>
+          <option value="short">Короткое (до 5)</option>
+          <option value="medium">Среднее (6–7)</option>
+          <option value="long">Длинное (8+)</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="generate" id="generate">
+      ✦ ГЕНЕРИРОВАТЬ
+    </button>
+
+    <p class="hint" id="hint">
+      Настрой фильтры и нажми кнопку — имя выберется случайно
+    </p>
+  </section>
+
+  <footer>
+    <span>ATAU / ГЕНЕРАТОР ИМЁН</span>
+    <span>СОЗДАНО С УВАЖЕНИЕМ К ТРАДИЦИЯМ</span>
+  </footer>
+
+</div>
+
+<script>
+// ==========================================
+// ЗВУК ЩЕЛЧКОВ — WEB AUDIO API
+// ==========================================
+
+let audioContext = null;
+
+function playClick() {
+  try {
+    if (!audioContext) {
+      const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+      if (!AudioContextClass) return;
+
+      audioContext = new AudioContextClass();
+    }
+
+    if (audioContext.state === "suspended") {
+      audioContext.resume();
+    }
+
+    const now = audioContext.currentTime;
+
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(1400, now);
+    oscillator.frequency.exponentialRampToValueAtTime(
+      650,
+      now + 0.018
+    );
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.03);
+  } catch (error) {
+    // При недоступности звука генератор продолжает работать
+  }
+}
+
+// ==========================================
+// БАЗА КАЗАХСКИХ ИМЁН
+// ==========================================
+
+const names = [
+  // Мужские — сила и характер
+  {name:"Алихан",gender:"male",meaning:"Великий хан, благородный правитель",type:"strength"},
+  {name:"Али",gender:"male",meaning:"Возвышенный, благородный",type:"strength"},
+  {name:"Азамат",gender:"male",meaning:"Молодец, достойный человек",type:"strength"},
+  {name:"Айбар",gender:"male",meaning:"Величие, внушительность",type:"strength"},
+  {name:"Арлан",gender:"male",meaning:"Волк",type:"strength"},
+  {name:"Батыр",gender:"male",meaning:"Богатырь, герой",type:"strength"},
+  {name:"Бекзат",gender:"male",meaning:"Благородный человек",type:"strength"},
+  {name:"Болат",gender:"male",meaning:"Сталь",type:"strength"},
+  {name:"Дамир",gender:"male",meaning:"Стойкий, железный",type:"strength"},
+  {name:"Ержан",gender:"male",meaning:"Мужественный человек",type:"strength"},
+  {name:"Кайрат",gender:"male",meaning:"Сила, энергия, усердие",type:"strength"},
+  {name:"Темир",gender:"male",meaning:"Железо",type:"strength"},
+  {name:"Тимур",gender:"male",meaning:"Железный",type:"strength"},
+  {name:"Самат",gender:"male",meaning:"Вечный, бессмертный",type:"strength"},
+  {name:"Ернар",gender:"male",meaning:"Мужественный, смелый",type:"strength"},
+
+  // Мужские — мудрость
+  {name:"Нурлан",gender:"male",meaning:"Светлый, лучезарный",type:"wisdom"},
+  {name:"Абай",gender:"male",meaning:"Внимательный, осторожный",type:"wisdom"},
+  {name:"Акылбек",gender:"male",meaning:"Мудрый господин",type:"wisdom"},
+  {name:"Данияр",gender:"male",meaning:"Знающий, мудрый",type:"wisdom"},
+  {name:"Ерасыл",gender:"male",meaning:"Достойный, благородный",type:"wisdom"},
+
+  // Мужские — традиции
+  {name:"Мирас",gender:"male",meaning:"Наследие, наследство",type:"tradition"},
+  {name:"Мухтар",gender:"male",meaning:"Избранный",type:"tradition"},
+  {name:"Санжар",gender:"male",meaning:"Имя исторических правителей",type:"tradition"},
+  {name:"Нурсултан",gender:"male",meaning:"Светлый правитель",type:"tradition"},
+
+  // Мужские — природа
+  {name:"Айдос",gender:"male",meaning:"Друг луны",type:"nature"},
+  {name:"Айсултан",gender:"male",meaning:"Лунный правитель",type:"nature"},
+  {name:"Алтай",gender:"male",meaning:"Название горного региона",type:"nature"},
+  {name:"Аян",gender:"male",meaning:"Знак, известие",type:"nature"},
+  {name:"Барыс",gender:"male",meaning:"Снежный барс",type:"nature"},
+  {name:"Жалын",gender:"male",meaning:"Пламя",type:"nature"},
+
+  // Женские — сила и характер
+  {name:"Алия",gender:"female",meaning:"Возвышенная, благородная",type:"strength"},
+
+  // Женские — мудрость и доброта
+  {name:"Аружан",gender:"female",meaning:"Красивая душа",type:"wisdom"},
+  {name:"Амина",gender:"female",meaning:"Надёжная, верная",type:"wisdom"},
+  {name:"Аяулым",gender:"female",meaning:"Дорогая, любимая",type:"wisdom"},
+  {name:"Балжан",gender:"female",meaning:"Милая, сладкая душа",type:"wisdom"},
+  {name:"Дана",gender:"female",meaning:"Мудрая, знающая",type:"wisdom"},
+  {name:"Дильназ",gender:"female",meaning:"Нежная и грациозная",type:"wisdom"},
+  {name:"Жансая",gender:"female",meaning:"Душевный покой",type:"wisdom"},
+  {name:"Жанель",gender:"female",meaning:"Душа и жизнь",type:"wisdom"},
+  {name:"Камила",gender:"female",meaning:"Совершенная",type:"wisdom"},
+  {name:"Назерке",gender:"female",meaning:"Нежная, утончённая",type:"wisdom"},
+
+  // Женские — природа и красота
+  {name:"Айым",gender:"female",meaning:"Моя луна, госпожа",type:"nature"},
+  {name:"Айару",gender:"female",meaning:"Лунная красота",type:"nature"},
+  {name:"Айдана",gender:"female",meaning:"Лунная мудрость",type:"nature"},
+  {name:"Айгерим",gender:"female",meaning:"Лунная красавица",type:"nature"},
+  {name:"Айсулу",gender:"female",meaning:"Красивая, как луна",type:"nature"},
+  {name:"Айнур",gender:"female",meaning:"Лунный свет",type:"nature"},
+  {name:"Кунсулу",gender:"female",meaning:"Красивая, как солнце",type:"nature"},
+  {name:"Меруерт",gender:"female",meaning:"Жемчуг",type:"nature"},
+  {name:"Нурай",gender:"female",meaning:"Свет луны",type:"nature"},
+  {name:"Нурия",gender:"female",meaning:"Светлая, сияющая",type:"nature"},
+  {name:"Ясмина",gender:"female",meaning:"Жасмин",type:"nature"},
+  {name:"Зарина",gender:"female",meaning:"Золотая",type:"nature"},
+  {name:"Асем",gender:"female",meaning:"Красивая",type:"nature"},
+  {name:"Акбота",gender:"female",meaning:"Белый верблюжонок",type:"nature"},
+  {name:"Ботагоз",gender:"female",meaning:"Имя, связанное с красотой глаз",type:"nature"},
+  {name:"Куралай",gender:"female",meaning:"Имя, связанное с красотой газели",type:"nature"},
+
+  // Женские — традиции
+  {name:"Мадина",gender:"female",meaning:"Имя с арабскими корнями",type:"tradition"},
+  {name:"Салтанат",gender:"female",meaning:"Великолепие, торжество",type:"tradition"},
+  {name:"Томирис",gender:"female",meaning:"Имя легендарной царицы",type:"tradition"}
+];
+
+// ==========================================
+// ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
+// ==========================================
+
+const nameEl = document.getElementById("name");
+const meaningEl = document.getElementById("meaning");
+const originEl = document.getElementById("origin");
+const hintEl = document.getElementById("hint");
+const button = document.getElementById("generate");
+
+const genderEl = document.getElementById("gender");
+const typeEl = document.getElementById("meaningType");
+const lengthEl = document.getElementById("length");
+
+let currentName = null;
+let isGenerating = false;
+
+// ==========================================
+// ФИЛЬТРАЦИЯ
+// ==========================================
+
+function getFilteredNames() {
+  return names.filter(item => {
+    if (
+      genderEl.value !== "all" &&
+      item.gender !== genderEl.value
+    ) {
+      return false;
+    }
+
+    if (
+      typeEl.value !== "all" &&
+      item.type !== typeEl.value
+    ) {
+      return false;
+    }
+
+    const length = [...item.name].length;
+
+    if (lengthEl.value === "short" && length > 5) {
+      return false;
+    }
+
+    if (
+      lengthEl.value === "medium" &&
+      (length < 6 || length > 7)
+    ) {
+      return false;
+    }
+
+    if (lengthEl.value === "long" && length < 8) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+// ==========================================
+// ПОКАЗ ИМЕНИ
+// ==========================================
+
+function showName(item, animate = true) {
+  currentName = item;
+
+  nameEl.classList.remove("animate");
+  void nameEl.offsetWidth;
+
+  nameEl.textContent = item.name;
+  meaningEl.textContent = item.meaning;
+
+  originEl.textContent = item.gender === "male"
+    ? "МУЖСКОЕ ИМЯ"
+    : "ЖЕНСКОЕ ИМЯ";
+
+  if (animate) {
+    nameEl.classList.add("animate");
+  }
+}
+
+// ==========================================
+// ГЕНЕРАЦИЯ С АНИМАЦИЕЙ И ЩЕЛЧКАМИ
+// ==========================================
+
+function generateName() {
+  if (isGenerating) return;
+
+  const pool = getFilteredNames();
+
+  if (pool.length === 0) {
+    hintEl.textContent =
+      "Нет имён под эти фильтры. Попробуй изменить настройки.";
+    return;
+  }
+
+  // Запускаем аудиоконтекст после нажатия пользователя
+  if (!audioContext) {
+    try {
+      const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+      if (AudioContextClass) {
+        audioContext = new AudioContextClass();
+      }
+    } catch (error) {
+      audioContext = null;
+    }
+  }
+
+  if (audioContext && audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+
+  isGenerating = true;
+  button.disabled = true;
+  button.textContent = "⟳ ПОДБИРАЕМ ИМЯ...";
+  hintEl.textContent = "Перебираем варианты...";
+
+  let steps = 0;
+  const totalSteps = 30 + Math.floor(Math.random() * 8);
+  const previousName = currentName ? currentName.name : null;
+
+  function spin() {
+    const randomName =
+      pool[Math.floor(Math.random() * pool.length)];
+
+    showName(randomName, false);
+
+    // Щелчок при каждом переключении имени
+    playClick();
+
+    steps++;
+
+    if (steps < totalSteps) {
+      const progress = steps / totalSteps;
+
+      // Чем ближе к концу, тем реже щелчки
+      const delay = 40 + Math.pow(progress, 3) * 320;
+
+      setTimeout(spin, delay);
+    } else {
+      let finalName = randomName;
+
+      // Не повторяем предыдущее итоговое имя, если возможно
+      const alternatives = pool.filter(
+        item => item.name !== previousName
+      );
+
+      if (
+        pool.length > 1 &&
+        previousName &&
+        alternatives.length > 0
+      ) {
+        finalName =
+          alternatives[Math.floor(Math.random() * alternatives.length)];
+      }
+
+      showName(finalName, true);
+
+      hintEl.textContent =
+        "Твоё имя найдено. Попробуй сгенерировать ещё!";
+
+      button.disabled = false;
+      button.textContent = "✦ ГЕНЕРИРОВАТЬ ЕЩЁ";
+      isGenerating = false;
+    }
+  }
+
+  spin();
+}
+
+// ==========================================
+// СОБЫТИЯ
+// ==========================================
+
+button.addEventListener("click", generateName);
+
+[genderEl, typeEl, lengthEl].forEach(select => {
+  select.addEventListener("change", () => {
+    const pool = getFilteredNames();
+
+    hintEl.textContent = pool.length
+      ? `Подходящих имён: ${pool.length}`
+      : "Нет имён под эти фильтры. Измени настройки.";
+  });
+});
+
+// ==========================================
+// НАЧАЛЬНЫЙ ЭКРАН
+// ==========================================
+
+showName({
+  name: "АТАУ",
+  gender: "male",
+  meaning: "Найди имя со своей историей",
+  type: "tradition"
+}, false);
+
+originEl.textContent = "КАЗАХСКИЕ ИМЕНА";
+</script>
+
+</body>
+</html>
